@@ -104,4 +104,30 @@ public class KnowledgeController implements Sortable {
             }
         }
     }
+
+    public ArrayList<Putusan> filterPutusanRentang(int min, int max) {
+        return this.repository.filterByRentangVonis(min, max);
+    }
+
+    public boolean hapusPutusan(String nomor) {
+        return this.repository.hapus(nomor);
+    }
+
+    public boolean updatePutusan(String nomor, Putusan baru) {
+        return this.repository.update(nomor, baru);
+    }
+
+    public StatistikPutusan getStatistik() {
+        return new StatistikPutusan(this.repository.getDaftarPutusan());
+    }
+
+    public int getTotalData() {
+        return this.repository.getTotalData();
+    }
+
+    public ArrayList<Putusan> sortByVonis(ArrayList<Putusan> daftar) {
+        ArrayList<Putusan> hasil = new ArrayList(daftar);
+        hasil.sort(Comparator.comparingInt(Putusan::getVonisHukuman));
+        return hasil;
+    }
 }
