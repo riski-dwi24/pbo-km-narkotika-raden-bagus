@@ -31,3 +31,26 @@ public class InputHandler {
             }
         }
     }
+
+    public static int validasiUmur(String prompt, Scanner sc) {
+        while(true) {
+            int umur = validasiInt(prompt, sc);
+            if (umur >= 0 && umur <= 150) {
+                return umur;
+            }
+
+            System.out.println("  Error: Umur harus antara 0-150 tahun.");
+        }
+    }
+
+    public static double validasiDouble(String prompt, Scanner sc) {
+        while(true) {
+            try {
+                System.out.print(prompt);
+                String input = sc.nextLine().trim().replace(",", ".");
+                return Double.parseDouble(input);
+            } catch (NumberFormatException var3) {
+                System.out.println("  Error: Input harus berupa angka desimal. Silakan coba lagi.");
+            }
+        }
+    }
