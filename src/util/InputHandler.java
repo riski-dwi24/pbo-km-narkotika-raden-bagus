@@ -72,3 +72,15 @@ public class InputHandler {
             }
         }
     }
+
+    public static String validasiString(String prompt, Scanner sc) {
+        while(true) {
+            System.out.print(prompt);
+            String input = sc.nextLine().trim();
+            if (!input.isEmpty()) {
+                return input;
+            }
+
+            System.out.println("  Error: Input tidak boleh kosong. Silakan coba lagi.");
+        }
+    }
