@@ -84,3 +84,21 @@ public class InputHandler {
             System.out.println("  Error: Input tidak boleh kosong. Silakan coba lagi.");
         }
     }
+
+    public static boolean konfirmasi(String prompt, Scanner sc) {
+        while(true) {
+            System.out.print(prompt + " (Y/N): ");
+            String input = sc.nextLine().trim().toUpperCase();
+            if (!input.equals("Y") && !input.equals("YA")) {
+                if (!input.equals("N") && !input.equals("TIDAK")) {
+                    System.out.println("  Error: Masukkan Y atau N.");
+                    continue;
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+    }
+}
