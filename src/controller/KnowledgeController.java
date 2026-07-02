@@ -130,4 +130,43 @@ public class KnowledgeController implements Sortable {
         hasil.sort(Comparator.comparingInt(Putusan::getVonisHukuman));
         return hasil;
     }
+    public ArrayList<Putusan> sortByDenda(ArrayList<Putusan> daftar) {
+        ArrayList<Putusan> hasil = new ArrayList(daftar);
+        hasil.sort(Comparator.comparingDouble(Putusan::getVonisDenda).reversed());
+        return hasil;
+    }
+
+    public ArrayList<Putusan> sortByNama(ArrayList<Putusan> daftar) {
+        ArrayList<Putusan> hasil = new ArrayList(daftar);
+        hasil.sort(Comparator.comparing(Putusan::getNamaTerdakwa));
+        return hasil;
+    }
+
+    public void exportToFile(String filename) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
+            writer.println("LAPORAN PUTUSAN PENGADILAN NARKOTIKA");
+            writer.println("=====================================");
+            writer.println("Total Data: " + this.repository.getTotalData());
+            writer.println("Tanggal Export: " + String.valueOf(LocalDateTime.now()));
+            writer.println();
+
+            for(Putusan p : this.repository.getDaftarPutusan()) {
+                writer.println(p.toString());
+            }
+
+            writer.println();
+            writer.println("--- STATISTIK ---");
+            StatistikPutusan stat = this.getStatistik();
+            writer.println("Total Putusan: " + stat.getTotalPutusan());
+            Object[] var10002 = new Object[]{stat.getRataRataVonis()};
+            writer.println("Rata-rata Vonis: " + String.format("%.2f", var10002) + " bulan");
+            var10002 = new Object[]{stat.getRataRataDenda()};
+            writer.println("Rata-rata Denda: Rp " + String.format("%.2f", var10002));
+            writer.println("Jenis Terbanyak: " + stat.getJenisNarkotikaTerbanyak());
+            System.out.println("Data berhasil diekspor ke: " + filename);
+        } catch (IOException e) {
+            System.out.println("Gagal mengekspor: " + e.getMessage());
+        }
+
+    }
 }
