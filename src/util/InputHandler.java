@@ -54,3 +54,21 @@ public class InputHandler {
             }
         }
     }
+
+
+    public static double validasiDoublePositif(String prompt, Scanner sc) {
+        while(true) {
+            try {
+                System.out.print(prompt);
+                String input = sc.nextLine().trim().replace(",", ".");
+                double nilai = Double.parseDouble(input);
+                if (nilai >= (double)0.0F) {
+                    return nilai;
+                }
+
+                System.out.println("  Error: Nilai tidak boleh negatif. Silakan coba lagi.");
+            } catch (NumberFormatException var5) {
+                System.out.println("  Error: Input harus berupa angka desimal. Silakan coba lagi.");
+            }
+        }
+    }
