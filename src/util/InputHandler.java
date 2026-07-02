@@ -102,3 +102,42 @@ public class InputHandler {
         }
     }
 }
+
+// Validasi rentang angka
+public static int validasiRentang(String prompt, int min, int max, Scanner sc) {
+    while (true) {
+        int nilai = validasiInt(prompt, sc);
+
+        if (nilai >= min && nilai <= max) {
+            return nilai;
+        }
+
+        System.out.println("  Error: Nilai harus antara " + min + " dan " + max + ".");
+    }
+}
+
+// Validasi panjang minimal string
+public static String validasiPanjangString(String prompt, int min, Scanner sc) {
+    while (true) {
+        String input = validasiString(prompt, sc);
+
+        if (input.length() >= min) {
+            return input;
+        }
+
+        System.out.println("  Error: Minimal " + min + " karakter.");
+    }
+}
+
+// Validasi pilihan menu
+public static int validasiMenu(String prompt, int jumlahMenu, Scanner sc) {
+    while (true) {
+        int pilihan = validasiInt(prompt, sc);
+
+        if (pilihan >= 1 && pilihan <= jumlahMenu) {
+            return pilihan;
+        }
+
+        System.out.println("  Error: Pilihan menu tidak tersedia.");
+    }
+}
