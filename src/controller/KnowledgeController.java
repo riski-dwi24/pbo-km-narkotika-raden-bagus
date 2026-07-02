@@ -70,4 +70,38 @@ public class KnowledgeController implements Sortable {
         }
     }
 
+    public ArrayList<Putusan> getSemuaPutusan() {
+        return this.repository.getDaftarPutusan();
+    }
+
+    public ArrayList<Putusan> cariPutusan(String keyword, String tipe) {
+        if (tipe.equalsIgnoreCase("nomor")) {
+            ArrayList<Putusan> hasil = new ArrayList();
+            Putusan p = this.repository.cariByNomor(keyword);
+            if (p != null) {
+                hasil.add(p);
+            }
+
+            return hasil;
+        } else {
+            return tipe.equalsIgnoreCase("nama") ? this.repository.cariByNama(keyword) : new ArrayList();
+        }
+    }
+
+    public ArrayList<Putusan> filterPutusan(String keyword, String tipe) {
+        switch (tipe.toLowerCase()) {
+            case "jenis" -> {
+                return this.repository.filterByJenisNarkotika(keyword);
+            }
+            case "pengadilan" -> {
+                return this.repository.filterByPengadilan(keyword);
+            }
+            case "peran" -> {
+                return this.repository.filterByPeran(keyword);
+            }
+            default -> {
+                return new ArrayList();
+            }
+        }
+    }
 }
