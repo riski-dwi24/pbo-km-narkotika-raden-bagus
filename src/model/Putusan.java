@@ -83,3 +83,44 @@ public class Putusan {
             tampilkan();
         }
     }
+
+    public String getKategoriHukuman() {
+        if (vonisHukuman < 60) return "Ringan";
+        else if (vonisHukuman <= 120) return "Sedang";
+        else return "Berat";
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Putusan[%s | %s | %s | %s | %d bln | Rp%.0f]",
+                nomorPerkara, namaTerdakwa, jenisNarkotika, peranTerdakwa,
+                vonisHukuman, vonisDenda);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Putusan putusan = (Putusan) obj;
+        return nomorPerkara != null && nomorPerkara.equalsIgnoreCase(putusan.nomorPerkara);
+    }
+
+    @Override
+    public int hashCode() {
+        return nomorPerkara != null ? nomorPerkara.toLowerCase().hashCode() : 0;
+    }
+
+    public String getNomorPerkara() { return nomorPerkara; }
+    public String getPengadilan() { return pengadilan; }
+    public String getTanggalPutusan() { return tanggalPutusan; }
+    public String getNamaTerdakwa() { return namaTerdakwa; }
+    public int getUmurTerdakwa() { return umurTerdakwa; }
+    public String getJenisNarkotika() { return jenisNarkotika; }
+    public double getBeratBarangBukti() { return beratBarangBukti; }
+    public String getPasalDilanggar() { return pasalDilanggar; }
+    public String getPeranTerdakwa() { return peranTerdakwa; }
+    public int getVonisHukuman() { return vonisHukuman; }
+    public double getVonisDenda() { return vonisDenda; }
+    public String getNamaHakim() { return namaHakim; }
+    public static int getJumlahDibuat() { return jumlahDibuat; }
+
