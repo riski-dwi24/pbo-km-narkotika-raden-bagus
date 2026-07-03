@@ -70,3 +70,26 @@ public class StatistikPutusan extends LaporanDasar {
         }
         this.distribusiPeran = listPeran.toArray(new String[0]);
     }
+    @Override
+    public void tampilkanLaporan() {
+        tampilkanHeader();
+        System.out.println("==============================================================");
+        System.out.println("                 LAPORAN STATISTIK KMS PUTUSAN                ");
+        System.out.println("==============================================================");
+        System.out.printf(" Total Putusan              : %d%n", totalPutusan);
+        System.out.printf(" Rata-rata Vonis Hukuman    : %.2f bulan%n", rataRataVonis);
+        System.out.printf(" Rata-rata Vonis Denda      : Rp %.2f%n", rataRataDenda);
+        System.out.printf(" Jenis Narkotika Terbanyak  : %s%n", jenisNarkotikaTerbanyak);
+        System.out.println("==============================================================");
+        System.out.println(" Distribusi Peran Terdakwa:");
+        if (distribusiPeran.length == 0) {
+            System.out.println("    Tidak ada data");
+        } else {
+            for (String dist : distribusiPeran) {
+                System.out.printf("    - %s%n", dist);
+            }
+        }
+        System.out.println("==============================================================");
+    }
+
+
