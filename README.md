@@ -45,21 +45,16 @@ Saat muncul prompt di console, ketik 1 untuk Console atau 2 untuk GUI
 
 
 #Struktur Proyek 
-src/
-├── controller/
-│   └── KnowledgeController.java
-├── model/
-│   ├── Putusan.java
-│   ├── KnowledgeRepository.java
-│   ├── StatistikPutusan.java
-│   └── LaporanDasar.java
-├── util/
-│   ├── InputHandler.java
-│   └── Sortable.java
-└── view/
-    ├── ConsoleView.java
-    ├── PutusanGUI.java
-    └── Main.java
+-controller/KnowledgeController.java → Controller (jembatan Model-View)
+-model/Putusan.java → Entity/data class
+-model/KnowledgeRepository.java → CRUD & penyimpanan data
+-model/StatistikPutusan.java → Perhitungan statistik
+-model/LaporanDasar.java → Abstract class untuk laporan
+-util/InputHandler.java → Validasi input & exception handling
+-util/Sortable.java → Interface untuk sorting
+-view/ConsoleView.java → Tampilan console (terminal)
+-view/PutusanGUI.java → Tampilan GUI (Swing)
+-view/Main.java → Entry point aplikasi
 
 
 #Video Demo
