@@ -2,6 +2,7 @@ package view;
 
 import controller.KnowledgeController;
 import model.Putusan;
+import model.StatistikPutusan;
 import util.InputHandler;
 
 import java.util.ArrayList;
@@ -71,6 +72,23 @@ public class ConsoleView {
         }
     }
 
+    public void tampilkanStatistik(StatistikPutusan statistik) {
+        this.tampilkanHeader("LAPORAN STATISTIK");
+        if (statistik == null) {
+            System.out.println("  Tidak ada data untuk ditampilkan.");
+        } else {
+            statistik.tampilkanLaporan();
+        }
+    }
+
+    public void tampilkanDetail(Putusan p) {
+        if (p == null) {
+            System.out.println("  Data tidak ditemukan!");
+        } else {
+            p.tampilkan(true);
+        }
+    }
+
     public void menuCari() {
         this.tampilkanHeader("CARI DATA PUTUSAN");
         System.out.println("  [1] Cari berdasarkan Nomor Perkara");
@@ -129,6 +147,43 @@ public class ConsoleView {
                 p.tampilkan();
             }
             this.tampilkanTabelFooter(hasil.size());
+        }
+    }
+
+    public void menuSort() {
+        this.tampilkanHeader("URUTKAN DATA (SORTING)");
+        System.out.println("  [1] Urutkan Berdasarkan Lamanya Vonis Hukuman (Terendah -> Tertinggi)");
+        System.out.println("  [2] Urutkan Berdasarkan Nominal Denda (Tertinggi -> Terendah)");
+        System.out.println("  [3] Urutkan Berdasarkan Abjad Nama Terdakwa (A - Z)");
+        int pil = InputHandler.validasiPilihan("  Pilih Kriteria Urut (1-3): ", 1, 3, this.scanner);
+        ArrayList<Putusan> hasil;
+        String kriteria;
+        if (pil == 1) {
+            hasil = this.controller.sortByVonis(this.controller.getSemuaPutusan());
+            kriteria = "Vonis Hukuman";
+        } else if (pil == 2) {
+            hasil = this.controller.sortByDenda(this.controller.getSemuaPutusan());
+            kriteria = "Nominal Denda";
+        } else {
+            hasil = this.controller.sortByNama(this.controller.getSemuaPutusan());
+            kriteria = "Nama Terdakwa";
+        }
+        this.tampilkanHeader("HASIL DATA DIURUTKAN BERDASARKAN " + kriteria.toUpperCase());
+        this.tampilkanTabelHeader();
+        for (Putusan p : hasil) {
+            p.tampilkan();
+        }
+        this.tampilkanTabelFooter(hasil.size());
+    }
+
+    public void menuLihatDetail() {
+        this.tampilkanHeader("LIHAT DETAIL PUTUSAN");
+        String nomor = InputHandler.validasiStringWajib("  Masukkan Nomor Perkara: ", this.scanner);
+        ArrayList<Putusan> hasil = this.controller.cariPutusan(nomor, "nomor");
+        if (hasil.isEmpty()) {
+            this.tampilkanPesan("Putusan tidak ditemukan.");
+        } else {
+            this.tampilkanDetail((Putusan)hasil.get(0));
         }
     }
 
