@@ -8,6 +8,8 @@ import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
@@ -75,6 +77,27 @@ public class PutusanGUI extends JFrame {
         header.setForeground(Color.WHITE);
         header.setPreferredSize(new Dimension(0, 40));
 
+        // ==================== SELECT ROW ====================
+        this.table.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                int row = table.getSelectedRow();
+                if (row >= 0) {
+                    txtNomor.setText(tableModel.getValueAt(row, 0).toString());
+                    cbPengadilan.setSelectedItem(tableModel.getValueAt(row, 1).toString());
+                    txtTahun.setText(tableModel.getValueAt(row, 2).toString());
+                    txtNama.setText(tableModel.getValueAt(row, 3).toString());
+                    txtUmur.setText(tableModel.getValueAt(row, 4).toString());
+                    cbJenis.setSelectedItem(tableModel.getValueAt(row, 5).toString());
+                    txtBerat.setText(tableModel.getValueAt(row, 6).toString());
+                    cbPasal.setSelectedItem(tableModel.getValueAt(row, 7).toString());
+                    cbPeran.setSelectedItem(tableModel.getValueAt(row, 8).toString());
+                    txtVonis.setText(tableModel.getValueAt(row, 9).toString());
+                    txtDenda.setText(tableModel.getValueAt(row, 10).toString());
+                    txtHakim.setText(tableModel.getValueAt(row, 11).toString());
+                }
+            }
+        });
+
         JScrollPane scrollPane = new JScrollPane(this.table);
         scrollPane.setBorder(new LineBorder(new Color(189, 195, 199), 1));
         centerPanel.add(scrollPane, BorderLayout.CENTER);
@@ -89,6 +112,7 @@ public class PutusanGUI extends JFrame {
         this.add(statPanel, BorderLayout.SOUTH);
     }
 
+    // ==================== CREATE FORM PANEL ====================
     private JPanel createFormPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -278,11 +302,66 @@ public class PutusanGUI extends JFrame {
     }
 
     private void updatePutusan() {
-        JOptionPane.showMessageDialog(this, "Fitur Update akan segera hadir!", "Info", JOptionPane.INFORMATION_MESSAGE);
+        String nomor = txtNomor.getText().trim();
+        if (nomor.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Pilih data dari tabel terlebih dahulu!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            Putusan baru = new Putusan();
+            baru.setNomorPerkara(nomor);
+            baru.setPengadilan(getComboValue(cbPengadilan));
+            baru.setTanggalPutusan(txtTahun.getText().trim().isEmpty() ? "2024" : txtTahun.getText().trim());
+            baru.setNamaTerdakwa(txtNama.getText().trim());
+            baru.setUmurTerdakwa(Integer.parseInt(txtUmur.getText().trim().isEmpty() ? "0" : txtUmur.getText().trim()));
+            baru.setJenisNarkotika(getComboValue(cbJenis));
+            baru.setBeratBarangBukti(Double.parseDouble(txtBerat.getText().trim().isEmpty() ? "0" : txtBerat.getText().trim()));
+            baru.setPasalDilanggar(getComboValue(cbPasal));
+            baru.setPeranTerdakwa(getComboValue(cbPeran));
+            baru.setVonisHukuman(Integer.parseInt(txtVonis.getText().trim().isEmpty() ? "0" : txtVonis.getText().trim()));
+            baru.setVonisDenda(Double.parseDouble(txtDenda.getText().trim().isEmpty() ? "0" : txtDenda.getText().trim()));
+            baru.setNamaHakim(txtHakim.getText().trim().isEmpty() ? "Majelis Hakim" : txtHakim.getText().trim());
+
+            if (controller.updatePutusan(nomor, baru)) {
+                JOptionPane.showMessageDialog(this, "Data berhasil diupdate!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                clearForm();
+                refreshTable();
+                updateStatistik();
+            } else {
+                JOptionPane.showMessageDialog(this, "Gagal mengupdate data!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
 
     private void hapusPutusan() {
-        JOptionPane.showMessageDialog(this, "Fitur Hapus akan segera hadir!", "Info", JOptionPane.INFORMATION_MESSAGE);
+        String nomor = txtNomor.getText().trim();
+        if (nomor.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Pilih data dari tabel terlebih dahulu!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Apakah Anda yakin ingin menghapus putusan " + nomor + "?",
+                "Konfirmasi Hapus",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (controller.hapusPutusan(nomor)) {
+                JOptionPane.showMessageDialog(this, "Data berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                clearForm();
+                refreshTable();
+                updateStatistik();
+            } else {
+                JOptionPane.showMessageDialog(this, "Gagal menghapus data!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     private void clearForm() {
@@ -327,4 +406,3 @@ public class PutusanGUI extends JFrame {
         // Akan diisi di commit selanjutnya
     }
 }
-
