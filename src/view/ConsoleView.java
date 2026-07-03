@@ -55,4 +55,15 @@ public class ConsoleView {
     public void close() {
         this.scanner.close();
     }
+    private void tampilkanTabelHeader() {
+        System.out.println("+------------------------+--------------------+------------+----------+-----------+-----------------+");
+        System.out.println("| NOMOR PERKARA          | NAMA TERDAKWA      | JENIS NARK | PERAN    | VONIS     | DENDA (Rp)      |");
+        System.out.println("+------------------------+--------------------+------------+----------+-----------+-----------------+");
+    }
+
+    private void tampilkanTabelFooter(int total) {
+        System.out.println("+------------------------+--------------------+------------+----------+-----------+-----------------+");
+        System.out.printf("| Total Data: %-86d |%n", total);
+        System.out.println("+------------------------+--------------------+------------+----------+-----------+-----------------+");
+    }
 }
