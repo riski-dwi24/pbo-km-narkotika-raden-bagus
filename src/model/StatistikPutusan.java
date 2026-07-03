@@ -91,5 +91,17 @@ public class StatistikPutusan extends LaporanDasar {
         }
         System.out.println("==============================================================");
     }
+    @Override
+    public String toString() {
+        return String.format("Statistik[Total=%d, RataVonis=%.1f bln, RataDenda=Rp%.0f, Terbanyak=%s]",
+                totalPutusan, rataRataVonis, rataRataDenda, jenisNarkotikaTerbanyak);
+    }
+
+    public int getTotalPutusan() { return totalPutusan; }
+    public double getRataRataVonis() { return rataRataVonis; }
+    public double getRataRataDenda() { return rataRataDenda; }
+    public String getJenisNarkotikaTerbanyak() { return jenisNarkotikaTerbanyak; }
+    public String[] getDistribusiPeran() { return distribusiPeran; }
+}
 
 
