@@ -124,3 +124,56 @@ public class Putusan {
     public String getNamaHakim() { return namaHakim; }
     public static int getJumlahDibuat() { return jumlahDibuat; }
 
+    public void setNomorPerkara(String nomorPerkara) {
+        if (nomorPerkara == null || nomorPerkara.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nomor perkara tidak boleh kosong!");
+        }
+        this.nomorPerkara = nomorPerkara;
+    }
+
+    public void setPengadilan(String pengadilan) { this.pengadilan = pengadilan; }
+    public void setTanggalPutusan(String tanggalPutusan) { this.tanggalPutusan = tanggalPutusan; }
+
+    public void setNamaTerdakwa(String namaTerdakwa) {
+        if (namaTerdakwa == null || namaTerdakwa.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nama terdakwa tidak boleh kosong!");
+        }
+        this.namaTerdakwa = namaTerdakwa;
+    }
+
+    public void setUmurTerdakwa(int umurTerdakwa) {
+        if (umurTerdakwa < 0 || umurTerdakwa > 150) {
+            throw new IllegalArgumentException("Umur harus antara 0-150 tahun!");
+        }
+        this.umurTerdakwa = umurTerdakwa;
+    }
+
+    public void setJenisNarkotika(String jenisNarkotika) { this.jenisNarkotika = jenisNarkotika; }
+
+    public void setBeratBarangBukti(double beratBarangBukti) {
+        if (beratBarangBukti < 0) {
+            throw new IllegalArgumentException("Berat barang bukti tidak boleh negatif!");
+        }
+        this.beratBarangBukti = beratBarangBukti;
+    }
+
+    public void setPasalDilanggar(String pasalDilanggar) { this.pasalDilanggar = pasalDilanggar; }
+    public void setPeranTerdakwa(String peranTerdakwa) { this.peranTerdakwa = peranTerdakwa; }
+
+    public void setVonisHukuman(int vonisHukuman) {
+        if (vonisHukuman < 0) {
+            throw new IllegalArgumentException("Vonis hukuman tidak boleh negatif!");
+        }
+        this.vonisHukuman = vonisHukuman;
+    }
+
+    public void setVonisDenda(double vonisDenda) {
+        if (vonisDenda < 0) {
+            throw new IllegalArgumentException("Vonis denda tidak boleh negatif!");
+        }
+        this.vonisDenda = vonisDenda;
+    }
+
+    public void setNamaHakim(String namaHakim) { this.namaHakim = namaHakim; }
+}
+
