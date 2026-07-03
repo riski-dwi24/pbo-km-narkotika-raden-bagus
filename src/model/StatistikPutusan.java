@@ -19,3 +19,34 @@ public class StatistikPutusan extends LaporanDasar {
         this.distribusiPeran = new String[0];
         hitungSemua();
     }
+
+    public void hitungSemua() {
+        this.totalPutusan = daftarPutusan.size();
+        if (daftarPutusan.isEmpty()) {
+            this.rataRataVonis = 0;
+            this.rataRataDenda = 0;
+            this.jenisNarkotikaTerbanyak = "Tidak ada data";
+            this.distribusiPeran = new String[0];
+            return;
+        }
+
+        double totalVonis = 0;
+        double totalDenda = 0;
+
+        HashMap<String, Integer> mapJenis = new HashMap<>();
+        HashMap<String, Integer> mapPeran = new HashMap<>();
+
+        for (Putusan p : daftarPutusan) {
+            totalVonis += p.getVonisHukuman();
+            totalDenda += p.getVonisDenda();
+
+            String jenis = p.getJenisNarkotika();
+            if (jenis != null && !jenis.trim().isEmpty()) {
+                mapJenis.put(jenis, mapJenis.getOrDefault(jenis, 0) + 1);
+            }
+
+            String peran = p.getPeranTerdakwa();
+            if (peran != null && !peran.trim().isEmpty()) {
+                mapPeran.put(peran, mapPeran.getOrDefault(peran, 0) + 1);
+            }
+        }
