@@ -89,6 +89,16 @@ public class ConsoleView {
         }
     }
 
+    public void tampilkanPesan(String pesan) {
+        System.out.println();
+        System.out.println("  " + pesan);
+    }
+
+    public void tampilkanHeader(String judul) {
+        System.out.println();
+        System.out.println("=== " + judul + " ===");
+    }
+
     public void menuCari() {
         this.tampilkanHeader("CARI DATA PUTUSAN");
         System.out.println("  [1] Cari berdasarkan Nomor Perkara");
@@ -176,6 +186,85 @@ public class ConsoleView {
         this.tampilkanTabelFooter(hasil.size());
     }
 
+    public void menuHapus() {
+        this.tampilkanHeader("PENGHAPUSAN DATA PUTUSAN");
+        String nomor = InputHandler.validasiStringWajib("  Masukkan Nomor Perkara yang akan dihapus: ", this.scanner);
+        ArrayList<Putusan> hasil = this.controller.cariPutusan(nomor, "nomor");
+        if (hasil.isEmpty()) {
+            this.tampilkanPesan("Putusan dengan nomor perkara tersebut tidak ditemukan.");
+        } else {
+            System.out.println("  Data yang akan dihapus:");
+            this.tampilkanTabelHeader();
+            ((Putusan)hasil.get(0)).tampilkan();
+            this.tampilkanTabelFooter(1);
+            if (InputHandler.konfirmasi("  Apakah Anda yakin ingin menghapus data ini?", this.scanner)) {
+                if (this.controller.hapusPutusan(nomor)) {
+                    this.tampilkanPesan("Data putusan sukses dihapus dari repositori!");
+                } else {
+                    this.tampilkanPesan("Gagal menghapus data.");
+                }
+            } else {
+                this.tampilkanPesan("Proses penghapusan dibatalkan.");
+            }
+        }
+    }
+
+    public void menuUpdate() {
+        this.tampilkanHeader("UPDATE DATA PUTUSAN");
+        String nomor = InputHandler.validasiStringWajib("  Masukkan Nomor Perkara yang akan diupdate: ", this.scanner);
+        ArrayList<Putusan> hasil = this.controller.cariPutusan(nomor, "nomor");
+        if (hasil.isEmpty()) {
+            this.tampilkanPesan("Putusan dengan nomor perkara tersebut tidak ditemukan.");
+        } else {
+            Putusan lama = (Putusan)hasil.get(0);
+            Putusan baru = new Putusan();
+            baru.setNomorPerkara(lama.getNomorPerkara());
+            System.out.println("  Masukkan data baru (Kosongkan/Tekan ENTER jika tidak ingin diubah):");
+            System.out.print("  Nama Pengadilan [" + lama.getPengadilan() + "]: ");
+            String input = this.scanner.nextLine().trim();
+            baru.setPengadilan(input.isEmpty() ? lama.getPengadilan() : input);
+            System.out.print("  Tanggal Putusan [" + lama.getTanggalPutusan() + "]: ");
+            input = this.scanner.nextLine().trim();
+            baru.setTanggalPutusan(input.isEmpty() ? lama.getTanggalPutusan() : input);
+            System.out.print("  Nama Terdakwa [" + lama.getNamaTerdakwa() + "]: ");
+            input = this.scanner.nextLine().trim();
+            baru.setNamaTerdakwa(input.isEmpty() ? lama.getNamaTerdakwa() : input);
+            System.out.print("  Umur Terdakwa [" + lama.getUmurTerdakwa() + "]: ");
+            input = this.scanner.nextLine().trim();
+            baru.setUmurTerdakwa(input.isEmpty() ? lama.getUmurTerdakwa() : Integer.parseInt(input));
+            System.out.print("  Jenis Narkotika [" + lama.getJenisNarkotika() + "]: ");
+            input = this.scanner.nextLine().trim();
+            baru.setJenisNarkotika(input.isEmpty() ? lama.getJenisNarkotika() : input);
+            System.out.print("  Berat Barang Bukti [" + lama.getBeratBarangBukti() + "]: ");
+            input = this.scanner.nextLine().trim();
+            baru.setBeratBarangBukti(input.isEmpty() ? lama.getBeratBarangBukti() : Double.parseDouble(input));
+            System.out.print("  Pasal Dilanggar [" + lama.getPasalDilanggar() + "]: ");
+            input = this.scanner.nextLine().trim();
+            baru.setPasalDilanggar(input.isEmpty() ? lama.getPasalDilanggar() : input);
+            System.out.print("  Peran Terdakwa [" + lama.getPeranTerdakwa() + "]: ");
+            input = this.scanner.nextLine().trim();
+            baru.setPeranTerdakwa(input.isEmpty() ? lama.getPeranTerdakwa() : input);
+            System.out.print("  Vonis Hukuman (Bulan) [" + lama.getVonisHukuman() + "]: ");
+            input = this.scanner.nextLine().trim();
+            baru.setVonisHukuman(input.isEmpty() ? lama.getVonisHukuman() : Integer.parseInt(input));
+            System.out.print("  Vonis Denda [" + lama.getVonisDenda() + "]: ");
+            input = this.scanner.nextLine().trim();
+            baru.setVonisDenda(input.isEmpty() ? lama.getVonisDenda() : Double.parseDouble(input));
+            System.out.print("  Nama Hakim [" + lama.getNamaHakim() + "]: ");
+            input = this.scanner.nextLine().trim();
+            baru.setNamaHakim(input.isEmpty() ? lama.getNamaHakim() : input);
+            if (InputHandler.konfirmasi("  Simpan perubahan?", this.scanner)) {
+                if (this.controller.updatePutusan(nomor, baru)) {
+                    this.tampilkanPesan("Putusan berhasil diupdate!");
+                } else {
+                    this.tampilkanPesan("Gagal mengupdate putusan.");
+                }
+            } else {
+                this.tampilkanPesan("Update dibatalkan.");
+            }
+        }
+    }
+
     public void menuLihatDetail() {
         this.tampilkanHeader("LIHAT DETAIL PUTUSAN");
         String nomor = InputHandler.validasiStringWajib("  Masukkan Nomor Perkara: ", this.scanner);
@@ -187,14 +276,10 @@ public class ConsoleView {
         }
     }
 
-    public void tampilkanHeader(String judul) {
-        System.out.println();
-        System.out.println("=== " + judul + " ===");
-    }
-
-    public void tampilkanPesan(String pesan) {
-        System.out.println();
-        System.out.println("  " + pesan);
+    public void menuExport() {
+        this.tampilkanHeader("EXPORT DATA KE FILE");
+        String filename = InputHandler.validasiStringWajib("  Nama file (contoh: laporan.txt): ", this.scanner);
+        this.controller.exportToFile(filename);
     }
 
     public void tungguEnter() {
