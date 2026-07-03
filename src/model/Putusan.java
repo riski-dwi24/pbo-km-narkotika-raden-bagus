@@ -54,3 +54,32 @@ public class Putusan {
         setNamaHakim(namaHakim);
         jumlahDibuat++;
     }
+
+    public void tampilkan() {
+        System.out.printf("| %-22s | %-18s | %-10s | %-8s | %-5d bln | Rp%-11.0f |%n",
+                nomorPerkara, namaTerdakwa, jenisNarkotika, peranTerdakwa, vonisHukuman, vonisDenda);
+    }
+
+    public void tampilkan(boolean detail) {
+        if (detail) {
+            System.out.println("==============================================================");
+            System.out.println("                 DETAIL PUTUSAN PENGADILAN                    ");
+            System.out.println("==============================================================");
+            System.out.printf(" Nomor Perkara      : %s%n", nomorPerkara);
+            System.out.printf(" Pengadilan         : %s%n", pengadilan);
+            System.out.printf(" Tanggal Putusan    : %s%n", tanggalPutusan);
+            System.out.printf(" Nama Terdakwa      : %s%n", namaTerdakwa);
+            System.out.printf(" Umur Terdakwa      : %d tahun%n", umurTerdakwa);
+            System.out.printf(" Jenis Narkotika    : %s%n", jenisNarkotika);
+            System.out.printf(" Berat BB           : %.2f gram%n", beratBarangBukti);
+            System.out.printf(" Pasal Dilanggar    : %s%n", pasalDilanggar);
+            System.out.printf(" Peran Terdakwa     : %s%n", peranTerdakwa);
+            System.out.printf(" Vonis Hukuman      : %d bulan%n", vonisHukuman);
+            System.out.printf(" Vonis Denda        : Rp %.2f%n", vonisDenda);
+            System.out.printf(" Nama Hakim         : %s%n", namaHakim);
+            System.out.printf(" Kategori Hukuman   : %s%n", getKategoriHukuman());
+            System.out.println("==============================================================");
+        } else {
+            tampilkan();
+        }
+    }
