@@ -35,3 +35,22 @@ public class Putusan {
         this.namaHakim = "";
         jumlahDibuat++;
     }
+
+    public Putusan(String nomorPerkara, String pengadilan, String tanggalPutusan,
+                   String namaTerdakwa, int umurTerdakwa, String jenisNarkotika,
+                   double beratBarangBukti, String pasalDilanggar, String peranTerdakwa,
+                   int vonisHukuman, double vonisDenda, String namaHakim) {
+        setNomorPerkara(nomorPerkara);
+        setPengadilan(pengadilan);
+        setTanggalPutusan(tanggalPutusan);
+        setNamaTerdakwa(namaTerdakwa);
+        setUmurTerdakwa(umurTerdakwa);
+        setJenisNarkotika(jenisNarkotika);
+        setBeratBarangBukti(beratBarangBukti);
+        setPasalDilanggar(pasalDilanggar);
+        setPeranTerdakwa(peranTerdakwa);
+        setVonisHukuman(vonisHukuman);
+        setVonisDenda(vonisDenda);
+        setNamaHakim(namaHakim);
+        jumlahDibuat++;
+    }
