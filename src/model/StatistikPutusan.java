@@ -50,3 +50,23 @@ public class StatistikPutusan extends LaporanDasar {
                 mapPeran.put(peran, mapPeran.getOrDefault(peran, 0) + 1);
             }
         }
+
+        this.rataRataVonis = totalVonis / totalPutusan;
+        this.rataRataDenda = totalDenda / totalPutusan;
+
+        String maxJenis = "Tidak ada data";
+        int maxCountJenis = -1;
+        for (Map.Entry<String, Integer> entry : mapJenis.entrySet()) {
+            if (entry.getValue() > maxCountJenis) {
+                maxCountJenis = entry.getValue();
+                maxJenis = entry.getKey();
+            }
+        }
+        this.jenisNarkotikaTerbanyak = maxJenis + " (" + maxCountJenis + " kasus)";
+
+        ArrayList<String> listPeran = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : mapPeran.entrySet()) {
+            listPeran.add(entry.getKey() + ": " + entry.getValue() + " terdakwa");
+        }
+        this.distribusiPeran = listPeran.toArray(new String[0]);
+    }
