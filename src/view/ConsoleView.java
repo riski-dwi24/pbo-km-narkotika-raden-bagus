@@ -4,6 +4,8 @@ import controller.KnowledgeController;
 import model.Putusan;
 import util.InputHandler;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class ConsoleView {
@@ -37,6 +39,99 @@ public class ConsoleView {
         return InputHandler.validasiPilihan("   Pilih Menu (0-10): ", 0, 10, this.scanner);
     }
 
+    public String[] inputFormPutusan() {
+        this.tampilkanHeader("INPUT DATA PUTUSAN BARU");
+        String[] data = new String[]{
+                InputHandler.validasiStringWajib("  Nomor Perkara      : ", this.scanner),
+                InputHandler.validasiStringWajib("  Nama Pengadilan    : ", this.scanner),
+                InputHandler.validasiStringWajib("  Tanggal Putusan    : ", this.scanner),
+                InputHandler.validasiStringWajib("  Nama Terdakwa      : ", this.scanner),
+                String.valueOf(InputHandler.validasiUmur("  Umur Terdakwa (Thn): ", this.scanner)),
+                InputHandler.validasiStringWajib("  Jenis Narkotika    : ", this.scanner),
+                String.valueOf(InputHandler.validasiDouble("  Berat Barang Bukti : ", this.scanner)),
+                InputHandler.validasiStringWajib("  Pasal Dilanggar    : ", this.scanner),
+                InputHandler.validasiStringWajib("  Peran Terdakwa     : ", this.scanner),
+                String.valueOf(InputHandler.validasiIntPositif("  Vonis Hukuman (Bln): ", this.scanner)),
+                String.valueOf(InputHandler.validasiDouble("  Vonis Denda (Rp)   : ", this.scanner)),
+                InputHandler.validasiStringWajib("  Nama Hakim Ketua   : ", this.scanner)
+        };
+        return data;
+    }
+
+    public void tampilkanDaftarPutusan(ArrayList<Putusan> daftar) {
+        this.tampilkanHeader("DAFTAR SELURUH PUTUSAN");
+        if (daftar.isEmpty()) {
+            System.out.println("  Tidak ada data putusan dalam sistem.");
+        } else {
+            this.tampilkanTabelHeader();
+            for (Putusan p : daftar) {
+                p.tampilkan();
+            }
+            this.tampilkanTabelFooter(daftar.size());
+        }
+    }
+
+    public void menuCari() {
+        this.tampilkanHeader("CARI DATA PUTUSAN");
+        System.out.println("  [1] Cari berdasarkan Nomor Perkara");
+        System.out.println("  [2] Cari berdasarkan Nama Terdakwa");
+        int pil = InputHandler.validasiPilihan("  Pilih tipe pencarian (1-2): ", 1, 2, this.scanner);
+        ArrayList<Putusan> hasil;
+        String keyword;
+        if (pil == 1) {
+            keyword = InputHandler.validasiStringWajib("  Masukkan Nomor Perkara: ", this.scanner);
+            hasil = this.controller.cariPutusan(keyword, "nomor");
+        } else {
+            keyword = InputHandler.validasiStringWajib("  Masukkan Nama Terdakwa: ", this.scanner);
+            hasil = this.controller.cariPutusan(keyword, "nama");
+        }
+        this.tampilkanHeader("HASIL PENCARIAN");
+        if (hasil.isEmpty()) {
+            System.out.println("  Data tidak ditemukan.");
+        } else {
+            this.tampilkanTabelHeader();
+            for (Putusan p : hasil) {
+                p.tampilkan();
+            }
+            this.tampilkanTabelFooter(hasil.size());
+        }
+    }
+
+    public void menuFilter() {
+        this.tampilkanHeader("FILTER DATA PUTUSAN");
+        System.out.println("  [1] Berdasarkan Jenis Narkotika");
+        System.out.println("  [2] Berdasarkan Nama Pengadilan");
+        System.out.println("  [3] Berdasarkan Peran Terdakwa");
+        System.out.println("  [4] Berdasarkan Rentang Hukuman Vonis");
+        int pil = InputHandler.validasiPilihan("  Pilih tipe filter (1-4): ", 1, 4, this.scanner);
+        ArrayList<Putusan> hasil;
+        String kw;
+        if (pil == 1) {
+            kw = InputHandler.validasiStringWajib("  Masukkan Jenis Narkotika: ", this.scanner);
+            hasil = this.controller.filterPutusan(kw, "jenis");
+        } else if (pil == 2) {
+            kw = InputHandler.validasiStringWajib("  Masukkan Nama Pengadilan: ", this.scanner);
+            hasil = this.controller.filterPutusan(kw, "pengadilan");
+        } else if (pil == 3) {
+            kw = InputHandler.validasiStringWajib("  Masukkan Peran Terdakwa: ", this.scanner);
+            hasil = this.controller.filterPutusan(kw, "peran");
+        } else {
+            int min = InputHandler.validasiIntPositif("  Vonis Minimal (Bulan): ", this.scanner);
+            int max = InputHandler.validasiIntPositif("  Vonis Maksimal (Bulan): ", this.scanner);
+            hasil = this.controller.filterPutusanRentang(min, max);
+        }
+        this.tampilkanHeader("HASIL FILTER DATA");
+        if (hasil.isEmpty()) {
+            System.out.println("  Tidak ada data yang sesuai dengan kriteria filter.");
+        } else {
+            this.tampilkanTabelHeader();
+            for (Putusan p : hasil) {
+                p.tampilkan();
+            }
+            this.tampilkanTabelFooter(hasil.size());
+        }
+    }
+
     public void tampilkanHeader(String judul) {
         System.out.println();
         System.out.println("=== " + judul + " ===");
@@ -55,6 +150,7 @@ public class ConsoleView {
     public void close() {
         this.scanner.close();
     }
+
     private void tampilkanTabelHeader() {
         System.out.println("+------------------------+--------------------+------------+----------+-----------+-----------------+");
         System.out.println("| NOMOR PERKARA          | NAMA TERDAKWA      | JENIS NARK | PERAN    | VONIS     | DENDA (Rp)      |");
