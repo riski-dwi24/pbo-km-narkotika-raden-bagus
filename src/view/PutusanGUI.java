@@ -19,7 +19,7 @@ public class PutusanGUI extends JFrame {
     private DefaultTableModel tableModel;
 
     // ==================== FORM COMPONENTS ====================
-    private JTextField txtNomor, txtNama, txtUmur, txtBerat, txtVonis, txtDenda, txtHakim, txtTahun;
+    private JTextField txtNomor, txtNama, txtUmur, txtBerat, txtVonis, txtDenda, txtHakim, txtTahun, txtCari;
     private JComboBox<String> cbJenis, cbPengadilan, cbPeran, cbPasal;
 
     // ==================== STAT LABELS ====================
@@ -60,6 +60,35 @@ public class PutusanGUI extends JFrame {
         // ==================== CENTER PANEL ====================
         JPanel centerPanel = new JPanel(new BorderLayout(5, 5));
         centerPanel.setBorder(new EmptyBorder(10, 10, 10, 5));
+
+        // ==================== SEARCH PANEL ====================
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
+        searchPanel.setBackground(new Color(236, 240, 241));
+
+        JLabel lblCari = new JLabel("Cari:");
+        lblCari.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        lblCari.setForeground(new Color(44, 62, 80));
+        searchPanel.add(lblCari);
+
+        this.txtCari = new JTextField(25);
+        this.txtCari.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        this.txtCari.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(new Color(149, 165, 166)),
+                new EmptyBorder(5, 8, 5, 8)
+        ));
+        searchPanel.add(this.txtCari);
+
+        JPanel btnCariNomor = createCustomButton("Cari Nomor", new Color(41, 128, 185), e -> cariPutusan("nomor"));
+        JPanel btnCariNama = createCustomButton("Cari Nama", new Color(41, 128, 185), e -> cariPutusan("nama"));
+        JPanel btnReset = createCustomButton("Reset", new Color(127, 140, 141), e -> {
+            refreshTable();
+            txtCari.setText("");
+        });
+
+        searchPanel.add(btnCariNomor);
+        searchPanel.add(btnCariNama);
+        searchPanel.add(btnReset);
+        centerPanel.add(searchPanel, BorderLayout.NORTH);
 
         // ==================== TABLE ====================
         String[] columns = {"Nomor Perkara", "Pengadilan", "Tahun", "Nama Terdakwa", "Umur",
@@ -112,7 +141,6 @@ public class PutusanGUI extends JFrame {
         this.add(statPanel, BorderLayout.SOUTH);
     }
 
-    // ==================== CREATE FORM PANEL ====================
     private JPanel createFormPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -157,6 +185,25 @@ public class PutusanGUI extends JFrame {
         panel.add(createFormRow("Denda (Rp):", this.txtDenda));
         panel.add(createFormRow("Nama Hakim:", this.txtHakim));
 
+        // ==================== FILTER PANEL ====================
+        JPanel filterPanel = new JPanel(new GridLayout(4, 1, 5, 5));
+        filterPanel.setBorder(new TitledBorder(
+                new LineBorder(new Color(52, 152, 219), 1),
+                " Filter & Sort ", TitledBorder.LEFT, TitledBorder.TOP,
+                new Font("Segoe UI", Font.BOLD, 12), new Color(52, 152, 219)
+        ));
+        filterPanel.setBackground(new Color(250, 250, 250));
+
+        JPanel btnFilterJenis = createCustomButton("Filter Jenis", new Color(41, 128, 185), e -> filterData("jenis"));
+        JPanel btnFilterPengadilan = createCustomButton("Filter Pengadilan", new Color(41, 128, 185), e -> filterData("pengadilan"));
+        JPanel btnSortVonis = createCustomButton("Sort Vonis ↑", new Color(22, 160, 133), e -> sortData("vonis"));
+        JPanel btnSortDenda = createCustomButton("Sort Denda ↓", new Color(22, 160, 133), e -> sortData("denda"));
+
+        filterPanel.add(btnFilterJenis);
+        filterPanel.add(btnFilterPengadilan);
+        filterPanel.add(btnSortVonis);
+        filterPanel.add(btnSortDenda);
+
         // ==================== BUTTON PANEL ====================
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 8));
         btnPanel.setBackground(new Color(250, 250, 250));
@@ -172,6 +219,7 @@ public class PutusanGUI extends JFrame {
         btnPanel.add(btnClear);
 
         panel.add(Box.createVerticalStrut(10));
+        panel.add(filterPanel);
         panel.add(btnPanel);
         return panel;
     }
@@ -265,6 +313,7 @@ public class PutusanGUI extends JFrame {
     // ==================== CRUD METHODS ====================
 
     private void tambahPutusan() {
+        // ... (sama seperti commit 2 dan 3)
         try {
             if (txtNomor.getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Nomor Perkara wajib diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -302,6 +351,7 @@ public class PutusanGUI extends JFrame {
     }
 
     private void updatePutusan() {
+        // ... (sama seperti commit 3)
         String nomor = txtNomor.getText().trim();
         if (nomor.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Pilih data dari tabel terlebih dahulu!", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -338,6 +388,7 @@ public class PutusanGUI extends JFrame {
     }
 
     private void hapusPutusan() {
+        // ... (sama seperti commit 3)
         String nomor = txtNomor.getText().trim();
         if (nomor.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Pilih data dari tabel terlebih dahulu!", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -364,7 +415,42 @@ public class PutusanGUI extends JFrame {
         }
     }
 
+    // ==================== CARI PUTUSAN ====================
+    private void cariPutusan(String tipe) {
+        String keyword = txtCari.getText().trim();
+        if (keyword.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Masukkan kata kunci pencarian!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        ArrayList<Putusan> hasil = controller.cariPutusan(keyword, tipe);
+        updateTable(hasil);
+        JOptionPane.showMessageDialog(this, "Ditemukan " + hasil.size() + " data", "Hasil Pencarian", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    // ==================== FILTER DATA ====================
+    private void filterData(String tipe) {
+        String keyword = JOptionPane.showInputDialog(this, "Masukkan kata kunci " + tipe + ":");
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            ArrayList<Putusan> hasil = controller.filterPutusan(keyword.trim(), tipe);
+            updateTable(hasil);
+            JOptionPane.showMessageDialog(this, "Ditemukan " + hasil.size() + " data", "Hasil Filter", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    // ==================== SORT DATA ====================
+    private void sortData(String tipe) {
+        ArrayList<Putusan> hasil;
+        if (tipe.equals("vonis")) {
+            hasil = controller.sortByVonis(controller.getSemuaPutusan());
+        } else {
+            hasil = controller.sortByDenda(controller.getSemuaPutusan());
+        }
+        updateTable(hasil);
+        JOptionPane.showMessageDialog(this, "Data berhasil diurutkan!", "Sort", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private void clearForm() {
+        // ... (sama seperti commit 2)
         txtNomor.setText("");
         cbPengadilan.setSelectedIndex(0);
         txtTahun.setText("");
