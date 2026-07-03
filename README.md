@@ -44,17 +44,20 @@ Klik kanan → pilih Run 'Main.main()'
 Saat muncul prompt di console, ketik 1 untuk Console atau 2 untuk GUI
 
 
-#Struktur Proyek 
--controller/KnowledgeController.java → Controller (jembatan Model-View)
--model/Putusan.java → Entity/data class
--model/KnowledgeRepository.java → CRUD & penyimpanan data
--model/StatistikPutusan.java → Perhitungan statistik
--model/LaporanDasar.java → Abstract class untuk laporan
--util/InputHandler.java → Validasi input & exception handling
--util/Sortable.java → Interface untuk sorting
--view/ConsoleView.java → Tampilan console (terminal)
--view/PutusanGUI.java → Tampilan GUI (Swing)
--view/Main.java → Entry point aplikasi
+## Struktur Proyek
+
+| Package | File | Keterangan |
+|---------|------|------------|
+| `controller` | `KnowledgeController.java` | Controller (jembatan Model-View) |
+| `model` | `Putusan.java` | Entity/data class |
+| `model` | `KnowledgeRepository.java` | CRUD & penyimpanan data |
+| `model` | `StatistikPutusan.java` | Perhitungan statistik |
+| `model` | `LaporanDasar.java` | Abstract class untuk laporan |
+| `util` | `InputHandler.java` | Validasi input & exception handling |
+| `util` | `Sortable.java` | Interface untuk sorting |
+| `view` | `ConsoleView.java` | Tampilan console (terminal) |
+| `view` | `PutusanGUI.java` | Tampilan GUI (Swing) |
+| `view` | `Main.java` | Entry point aplikasi |
 
 
 #Video Demo
