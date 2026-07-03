@@ -2,6 +2,7 @@ package view;
 
 import controller.KnowledgeController;
 import model.Putusan;
+import model.StatistikPutusan;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -10,7 +11,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.function.Consumer;
 
 public class PutusanGUI extends JFrame {
@@ -30,6 +34,10 @@ public class PutusanGUI extends JFrame {
     private final String[] PENGADILAN = {"Pengadilan Negeri Surabaya", "Pengadilan Negeri Serui", "Pengadilan Tinggi Bandung", "Pengadilan Agama Waikabubak"};
     private final String[] PERAN = {"Karyawan Swasta", "Wiraswasta", "Belum Bekerja", "PNS", "Petani", "Sopir"};
     private final String[] PASAL = {"UU No. 35/2009", "UU Tipikor", "Hukum Perdata", "Hukum Islam", "HIR / RBg"};
+
+    // ==================== FORMATTER (BARU) ====================
+    private DecimalFormat beratFormat = new DecimalFormat("0.000");
+    private NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
 
     public PutusanGUI(KnowledgeController controller) {
         this.controller = controller;
@@ -204,7 +212,7 @@ public class PutusanGUI extends JFrame {
         filterPanel.add(btnSortVonis);
         filterPanel.add(btnSortDenda);
 
-        // ==================== BUTTON PANEL ====================
+        // ==================== BUTTON PANEL (DITAMBAH EXPORT) ====================
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 8));
         btnPanel.setBackground(new Color(250, 250, 250));
 
@@ -212,11 +220,13 @@ public class PutusanGUI extends JFrame {
         JPanel btnUpdate = createCustomButton("Update", new Color(243, 156, 18), e -> updatePutusan());
         JPanel btnHapus = createCustomButton("Hapus", new Color(231, 76, 60), e -> hapusPutusan());
         JPanel btnClear = createCustomButton("Clear", new Color(127, 140, 141), e -> clearForm());
+        JPanel btnExport = createCustomButton("Export", new Color(142, 68, 173), e -> exportData()); // <<< BARU
 
         btnPanel.add(btnTambah);
         btnPanel.add(btnUpdate);
         btnPanel.add(btnHapus);
         btnPanel.add(btnClear);
+        btnPanel.add(btnExport); // <<< BARU
 
         panel.add(Box.createVerticalStrut(10));
         panel.add(filterPanel);
@@ -313,7 +323,6 @@ public class PutusanGUI extends JFrame {
     // ==================== CRUD METHODS ====================
 
     private void tambahPutusan() {
-        // ... (sama seperti commit 2 dan 3)
         try {
             if (txtNomor.getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Nomor Perkara wajib diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -351,7 +360,6 @@ public class PutusanGUI extends JFrame {
     }
 
     private void updatePutusan() {
-        // ... (sama seperti commit 3)
         String nomor = txtNomor.getText().trim();
         if (nomor.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Pilih data dari tabel terlebih dahulu!", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -388,7 +396,6 @@ public class PutusanGUI extends JFrame {
     }
 
     private void hapusPutusan() {
-        // ... (sama seperti commit 3)
         String nomor = txtNomor.getText().trim();
         if (nomor.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Pilih data dari tabel terlebih dahulu!", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -449,8 +456,16 @@ public class PutusanGUI extends JFrame {
         JOptionPane.showMessageDialog(this, "Data berhasil diurutkan!", "Sort", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    // ==================== EXPORT DATA (BARU) ====================
+    private void exportData() {
+        String filename = JOptionPane.showInputDialog(this, "Nama file (contoh: laporan.txt):", "laporan_putusan.txt");
+        if (filename != null && !filename.isEmpty()) {
+            controller.exportToFile(filename);
+            JOptionPane.showMessageDialog(this, "Data berhasil diekspor ke " + filename, "Sukses", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
     private void clearForm() {
-        // ... (sama seperti commit 2)
         txtNomor.setText("");
         cbPengadilan.setSelectedIndex(0);
         txtTahun.setText("");
@@ -479,16 +494,31 @@ public class PutusanGUI extends JFrame {
         tableModel.setRowCount(0);
         for (Putusan p : daftar) {
             Object[] row = {
-                    p.getNomorPerkara(), p.getPengadilan(), p.getTanggalPutusan(),
-                    p.getNamaTerdakwa(), p.getUmurTerdakwa(), p.getJenisNarkotika(),
-                    p.getBeratBarangBukti(), p.getPasalDilanggar(), p.getPeranTerdakwa(),
-                    p.getVonisHukuman(), p.getVonisDenda(), p.getNamaHakim()
+                    p.getNomorPerkara(),
+                    p.getPengadilan(),
+                    p.getTanggalPutusan(),
+                    p.getNamaTerdakwa(),
+                    p.getUmurTerdakwa(),
+                    p.getJenisNarkotika(),
+                    beratFormat.format(p.getBeratBarangBukti()), // Format berat
+                    p.getPasalDilanggar(),
+                    p.getPeranTerdakwa(),
+                    p.getVonisHukuman(),
+                    currencyFormat.format(p.getVonisDenda()), // Format currency
+                    p.getNamaHakim()
             };
             tableModel.addRow(row);
         }
     }
 
+    // ==================== UPDATE STATISTIK (BARU - REAL-TIME) ====================
     private void updateStatistik() {
-        // Akan diisi di commit selanjutnya
+        StatistikPutusan stat = controller.getStatistik();
+        if (stat != null) {
+            lblTotalData.setText("Total Data: " + stat.getTotalPutusan());
+            lblRataVonis.setText(String.format("Rata-rata Vonis: %.1f bln", stat.getRataRataVonis()));
+            lblRataDenda.setText(String.format("Rata-rata Denda: %s", currencyFormat.format(stat.getRataRataDenda())));
+            lblJenisTerbanyak.setText("Jenis Terbanyak: " + stat.getJenisNarkotikaTerbanyak());
+        }
     }
 }
